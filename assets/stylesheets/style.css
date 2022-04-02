@@ -202,3 +202,22 @@ tr td:last-child {
 .more-link {
     color: black;
 }
+
+.table-error {
+    display: none;
+}
+
+.table-error tr {
+    text-align: center;
+    line-height: 50px;
+}
+
+.table-error tr > td {
+    width: 100%;
+    border-radius: 7px;
+    
+
+    color: #842029;
+    background-color: #f8d7da;
+    border: 3px solid #f09099;
+}

@@ -8,6 +8,8 @@ const searchBtn = document.querySelector('.search-btn');
 
 const table = document.querySelector('.results-table');
 const tableBody = document.querySelector('.table-body');
+const tableError = document.querySelector('.table-error');
+const tableErrorCol = document.querySelector('.table-error tr > td');
 
 class Renderer {
     
@@ -37,40 +39,15 @@ class Renderer {
     
         return row;
     }
+
+    static renderTableError(error) {
+        tableErrorCol.innerText = error;
+    }
 }
 
-class App {
-    
-    borderNo = 1;
-    isSearchingForCountry = false;
+class Elements {
 
-    constructor () {
-        this.currentCountry = "";
-        this.currentCountryData = {};
-        this.currentCountryNeighboursData = [];
-
-        // * Css variables
-        rootEl.style.setProperty("--table-body-loading-screen-visibility", "none");
-
-        // * Event listeners
-        searchBtn.addEventListener('click', () => {
-            
-            if (this.isSearchingForCountry) {
-                return;
-            };
-            
-            this.toggleSearchBtn();
-            this.toggleSearchState();
-            this.toggleTableBodyLoadingScreen();
-            this.onNewCountrySearch(inputBox.value);
-        });
-    }
-
-    resetCurrentState() {
-        this.borderNo = 1;
-        this.currentCountryNeighbours = [];
-    }
-
+    // * Toggling elements
     toggleTableBodyLoadingScreen() {
         rootEl.style.setProperty("--table-body-loading-screen-visibility", rootEl.style.getPropertyValue("--table-body-loading-screen-visibility") === "none" ? "block" : "none");
     }
@@ -85,8 +62,48 @@ class App {
         this.isSearchingForCountry = !this.isSearchingForCountry;
     }
 
+    // Hide
+    setTableErrorVisibility(visibility=false) {
+        tableError.style.display = visibility ? "table-footer-group" : "none";
+    }
+};
+
+class App extends Elements{
+    
+    borderNo = 1;
+    isSearchingForCountry = false;
+
+    constructor () {
+
+        super();
+
+        this.currentCountry = "";
+        this.currentCountryData = {};
+        this.currentCountryNeighboursData = [];
+
+        // * Css variables
+        rootEl.style.setProperty("--table-body-loading-screen-visibility", "none");
+
+        // * Event listeners
+        searchBtn.addEventListener('click', () => {
+            
+            if (this.isSearchingForCountry || inputBox.value.length === 0) return;
+            
+            this.setTableErrorVisibility(false);
+            this.toggleSearchBtn();
+            this.toggleSearchState();
+            this.toggleTableBodyLoadingScreen();
+            this.onNewCountrySearch(inputBox.value);
+        });
+    }
+
+    resetCurrentState() {
+        this.borderNo = 1;
+        this.currentCountryNeighbours = [];
+    }
+
     onNewCountrySearch(countryName) {
-        this.resetCurrentState()
+        this.resetCurrentState();
         this.currentCountry = countryName;
         this.__getCountrysNeighborData();
     }
@@ -94,11 +111,24 @@ class App {
     __getCountrysNeighborData() {
         
         fetch(`https://restcountries.com/v3.1/name/${this.currentCountry}`)
-         .then(response => response.json())
+         .then(response => {
+            if (!response.ok) {
+                const err =  new Error(`Country named ${this.currentCountry} doesn't exists`);
+                err.response = response;
+                throw err;
+            }
+            return response.json();
+         })
          .then(data => {
             [this.currentCountryData] = data;
             this.__renderBorderCountriesList();
-         }).finally(()=>{
+         })
+         .catch(e => {
+            tableBody.innerHTML = ""
+            Renderer.renderTableError(e.message);
+            this.setTableErrorVisibility(true);
+         })
+         .finally(()=>{
             this.toggleSearchState();
             this.toggleSearchBtn();
             this.toggleTableBodyLoadingScreen();
@@ -108,6 +138,12 @@ class App {
     __renderBorderCountriesList() {
     
         const {borders: countryBorders} = this.currentCountryData;
+
+        if(!countryBorders) {
+            Renderer.renderTableError(`${this.currentCountry} doesn't share it's border with any other country`);
+            this.setTableErrorVisibility(true);
+            return;
+        };
     
         countryBorders.forEach(border => {
             fetch(`https://restcountries.com/v3.1/alpha/${border}`)
@@ -116,7 +152,7 @@ class App {
                 
                  // * When first promise is fulfilled or rejected
                 if (this.borderNo === 1) tableBody.innerHTML = "";
-                
+
                 this.currentCountryNeighboursData.push(data[0]);
                 tableBody.appendChild(Renderer.renderBorderSharingCountryElement(data[0], this.borderNo));
             })
@@ -133,5 +169,5 @@ class App {
 
 const app = new App();
 
-inputBox.value = "usa";
-searchBtn.click();
+// inputBox.value = "usa";
+// searchBtn.click();
