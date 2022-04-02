@@ -3,6 +3,7 @@
 
 /* * Overriding Default styling */
 :root {
+    --table-body-loading-screen-visibility: none;
     --neighbour-list-border-radius: 9px;
 }
 
@@ -37,12 +38,20 @@ input:active, button:active{border: none;outline: none;}
     background: #6F6F6F;
 }
 
+/* * Custom Animations */
+@keyframes rotateLoading {
+    from{transform: rotate(0deg);}
+    to{transform: rotate(360deg);}
+}
+
 /* * Utility classes */
 .d-flex {display: flex;}
+.d-none {display: none;}
 .j-center {justify-content: center;}
 .a-center {align-items: center;}
 .w-100 { width: 100%;}
 .flex-col {flex-direction: column;}
+.loading-animation {animation: rotateLoading 2s infinite linear;}
 
 /* * Navbar styling */
 .navbar {
@@ -62,31 +71,13 @@ input:active, button:active{border: none;outline: none;}
 }
 
 /* * Search box */
-.search-box-container {}
 
 .love-your-neighbours{
     font-size: 2.5rem;
     text-transform: capitalize;
 }
-
 .love-your-neighbours i {
     color: #FFDD00;
-    /* color: #fc3a52; */
-    animation: heartScale 1s 1 both;
-    animation-delay: 2s;
-    animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-}
-
-@keyframes heartScale {
-    0% {
-        transform: scale(0.9);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
-    }
 }
 
 .search-box-wrapper {
@@ -95,20 +86,15 @@ input:active, button:active{border: none;outline: none;}
 }
 
 .search-box {
-    border: none;
     border-radius: 100px;
     background: #F4F4F4;
-    
     width: 550px;
     height: 54px;
     padding: 15px;
     padding-left: 20px;
-    
     font-weight: 700;
     font-size: 1.25rem;
-
     box-shadow: 0px 1px 15px -3px rgba(0, 0, 0, 0.25);
-
 }
 
 .search-box::placeholder {
@@ -116,15 +102,13 @@ input:active, button:active{border: none;outline: none;}
     font-weight: 300;
     font-family: 'Roboto', sans-serif;
 }
+
 .search-btn {
     border: none;
-    border-radius: 100%;
-    
+    border-radius: 100%;    
     background: #FFDD00;
-    
     width: 54px;
     height: 54px;
-    
     position: absolute;
     right: 0;
     top: 0;
@@ -192,9 +176,23 @@ tr td:last-child {
 
 /* * Table data styling */
 
-.results-table {}
+.results-table {
+    position: relative;
+}
 
-.table-body {}
+.results-table::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -10px;
+    border-radius: 7px;
+    padding: 0 10px;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: var(--table-body-loading-screen-visibility);
+    background-color: rgba(244, 244, 244, 0.507);
+}
 
 .table-row {}
 
