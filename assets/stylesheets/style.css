@@ -66,6 +66,7 @@ input:active, button:active{border: none;outline: none;}
 
 .love-your-neighbours{
     font-size: 2.5rem;
+    text-transform: capitalize;
 }
 
 .love-your-neighbours i {
@@ -191,20 +192,11 @@ tr td:last-child {
 
 /* * Table data styling */
 
-@keyframes fadeIn {
-    from{opacity: 0;}to{opacity: 1;}
-}
-.results-table {
-    opacity: 0;
-    transition: all 2s ease-in-out; 
-}
+.results-table {}
 
-.table-body {
-}
+.table-body {}
 
-.table-row {
-    /* animation: fadeIn 2s 1 cubic-bezier(0.075, 0.82, 0.165, 1); */
-}
+.table-row {}
 
 .country-no {
     color: #6F6F6F;
