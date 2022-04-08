@@ -47,11 +47,13 @@ input:active, button:active{border: none;outline: none;}
 /* * Utility classes */
 .d-flex {display: flex;}
 .d-none {display: none;}
+.d-block {display: block;}
 .j-center {justify-content: center;}
 .a-center {align-items: center;}
 .w-100 { width: 100%;}
 .flex-col {flex-direction: column;}
 .loading-animation {animation: rotateLoading 2s infinite linear;}
+.oy-hidden {overflow-y: hidden;}
 
 /* * Navbar styling */
 .navbar {
@@ -220,4 +222,20 @@ tr td:last-child {
     color: #842029;
     background-color: #f8d7da;
     border: 3px solid #f09099;
+}
+
+/* More view container */
+.more-view-container {
+    width: 100%;
+    height: 100vh;
+    overflow-y: scroll;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: white;
+}
+
+#map {
+    width: 100%;
+    height: 55vh;
 }

@@ -10,10 +10,16 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="./assets/stylesheets/externals/animate.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
     <link rel="stylesheet" href="./assets/stylesheets/style.css">
 
     <!-- Scripts -->
     <script src="./assets/scripts/external/font-awesome.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
     <script defer src="./assets/scripts/main.js"></script>
 
 </head>
@@ -38,7 +44,9 @@
     </div>
 
     <!-- Body -->
-    <main class="w-100 d-flex j-center table-container">
+
+    <main class="w-100 d-flex flex-col a-center table-container">
+
         <table class="results-table">
             <thead class="header-row">
                 <th>#</th>
@@ -49,12 +57,23 @@
             </thead>
             <tbody class="table-body">
             </tbody>
-            <tfoot class="table-error">
+            <tfoot class="table-error animate__animated animate__fadeInDown">
                 <tr>
-                    <td colspan="5">Japan doesn't share border with anyone :(</td>
+                    <td colspan="5"></td>
                 </tr>
             </tfoot>
         </table>
+    </main>
+
+    <!-- More view -->
+    <main class="d-none more-view-container">
+    <!-- <main class="more-view-container"> -->
+        <section class="map" id="map">
+
+        </section>
+        <section class="more-view-details-container">
+            
+        </section>
     </main>
 </body>
 </html>
