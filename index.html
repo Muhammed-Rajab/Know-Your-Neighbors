@@ -20,7 +20,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script>
-    <script defer src="./assets/scripts/main.js"></script>
+    <script type="module" defer src="./assets/scripts/main.js"></script>
 
 </head>
 <body>
@@ -66,13 +66,13 @@
     </main>
 
     <!-- More view -->
-    <main class="d-none more-view-container">
+    <main class="d-none more-view-container animate__animated animate__fast animate__fadeOut">
     <!-- <main class="more-view-container"> -->
         <section class="map" id="map">
 
         </section>
-        <section class="more-view-details-container">
-            
+        <section class="d-flex flex-col more-view-details-container">
+
         </section>
     </main>
 </body>

@@ -45,7 +45,7 @@ input:active, button:active{border: none;outline: none;}
 }
 
 /* * Utility classes */
-.d-flex {display: flex;}
+.d-flex {display: flex !important;}
 .d-none {display: none;}
 .d-block {display: block;}
 .j-center {justify-content: center;}
@@ -228,14 +228,81 @@ tr td:last-child {
 .more-view-container {
     width: 100%;
     height: 100vh;
-    overflow-y: scroll;
     position: absolute;
     top: 0;
     left: 0;
     background: white;
+    /* display: block; */
 }
 
 #map {
     width: 100%;
-    height: 55vh;
+}
+
+/* .more-view-container > section {
+    width: 50%;
+} */
+
+.more-view-details-container {
+    padding: 20px;
+    overflow-y: scroll;
+    background: white;
+    justify-content: end;
+    position: absolute;
+    right: 40px;
+    bottom: 40px;
+    z-index: 1000;
+    border-radius: 9px;
+
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+}
+
+.more-view-details-container::-webkit-scrollbar {
+    width: 0px;
+    border-radius: 10px;
+}
+
+.more-view-details-container::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.more-view-details-container::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: transparent;
+}
+
+.more-country-title {
+    font-size: 2rem;
+}
+
+.more-country-name {
+
+}
+
+.more-view-details-container{
+    padding: 30px;
+}
+
+.more-view-details-container section {
+    padding-left: 20px;
+}
+
+.more-country-details-list {
+    padding-left: 20px;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    row-gap: 7px;
+}
+
+.more-country-details-list a {
+    color: black;
+}
+
+.more-country-details-list li {
+    /* list-style-type: ; */
+    font-weight: 300;
+    color: #6F6F6F;
 }

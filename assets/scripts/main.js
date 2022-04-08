@@ -1,6 +1,10 @@
 'use strict';
 const log = console.log;
 
+// * Importing modules
+import { Renderer } from "./modules/render.js";
+import { Elements } from "./modules/elements.js";
+
 const rootEl = document.querySelector(':root');
 
 const inputBox = document.querySelector('.search-box');
@@ -8,78 +12,10 @@ const searchBtn = document.querySelector('.search-btn');
 
 const table = document.querySelector('.results-table');
 const tableBody = document.querySelector('.table-body');
-const tableError = document.querySelector('.table-error');
 const tableErrorCol = document.querySelector('.table-error tr > td');
 
 const moreViewContainer = document.querySelector('.more-view-container');
 const moreViewDetails = document.querySelector('.more-view-details-container');
-const moreViewMap = document.querySelector('#map');
-
-class Renderer {
-    
-    static renderBorderSharingCountryElement(data, borderNo, id, handleMoreBtnClick) {
-        const {name:{common:  countryName},flag: countryFlag,population: countryPopulation} = data;
-    
-        const row = document.createElement('tr');
-        row.dataset.id = id;
-        row.classList.add('table-row');
-        row.classList.add('animate__animated');
-        row.classList.add('animate__fadeInDown');
-    
-        const tdClasses = ['country-no', 'country-name', 'country-flag', 'country-population'];
-
-        const tdInnerText = ['#'+borderNo, countryName, countryFlag, new Intl.NumberFormat().format(countryPopulation)];
-    
-        tdClasses.forEach((class_, idx) => {
-            const td = document.createElement('td');
-            td.innerText = tdInnerText[idx];
-            td.classList.add(class_);
-            row.appendChild(td);
-        });
-    
-        const countryMoreLinkTd = document.createElement('td');
-        countryMoreLinkTd.classList.add('country-more');
-        countryMoreLinkTd.innerHTML = `<i class="fa-solid fa-angles-right more-link"></i>`;
-        log(countryMoreLinkTd.querySelector('i'));
-        countryMoreLinkTd.querySelector('i').addEventListener('click',handleMoreBtnClick);
-        row.appendChild(countryMoreLinkTd);
-    
-        return row;
-    }
-
-    static renderTableError(error) {
-        tableErrorCol.innerText = error;
-    }
-}
-
-class Elements {
-
-    // * Toggling elements
-    toggleTableBodyLoadingScreen() {
-        rootEl.style.setProperty("--table-body-loading-screen-visibility", rootEl.style.getPropertyValue("--table-body-loading-screen-visibility") === "none" ? "block" : "none");
-    }
-
-    toggleSearchBtn() {
-        searchBtn.disabled = !searchBtn.disabled;
-        searchBtn.querySelector('i').classList.toggle("fa-spinner");
-        searchBtn.querySelector('i').classList.toggle("loading-animation");
-    }
-
-    toggleSearchState() {
-        this.isSearchingForCountry = !this.isSearchingForCountry;
-    }
-
-    // Hide
-    setTableErrorVisibility(visibility=false) {
-        tableError.style.display = visibility ? "table-footer-group" : "none";
-    }
-
-    toggleMoreViewContainer() {
-        moreViewContainer.classList.toggle('d-none');
-        document.body.classList.toggle('oy-hidden');
-        this.map.invalidateSize();
-    }
-};
 
 class App extends Elements{
     
@@ -99,7 +35,7 @@ class App extends Elements{
         // * Css variables
         rootEl.style.setProperty("--table-body-loading-screen-visibility", "none");
         
-        // * Initializing map
+        // * Initializing map and map assets
         navigator.geolocation.getCurrentPosition((e) => {
             
             const {coords: {latitude: lat,longitude: lng}} = e;
@@ -125,6 +61,7 @@ class App extends Elements{
             shadowAnchor: [22, 94]
         });
 
+
         // * Event listeners
         searchBtn.addEventListener('click', () => {
             
@@ -140,7 +77,7 @@ class App extends Elements{
         // * When escape key is pressed
         window.addEventListener('keydown', e => {
             if (e.key === "Escape") {
-                if (!moreViewContainer.classList.contains('d-none')) {
+                if (moreViewContainer.classList.contains('d-flex')) {
                     this.toggleMoreViewContainer();
                 }
             }
@@ -148,13 +85,13 @@ class App extends Elements{
 
     }
 
-    resetCurrentState() {
+    resetCurrentResults() {
         this.borderNo = 1;
         this.currentCountryNeighbours = [];
     }
 
     onNewCountrySearch(countryName) {
-        this.resetCurrentState();
+        this.resetCurrentResults();
         this.currentCountry = countryName;
         this.__getCountrysNeighborData();
     }
@@ -206,7 +143,7 @@ class App extends Elements{
 
                 const newDataID = Date.now();
                 this.currentCountryNeighboursData.push({data: data[0], id: newDataID});
-                tableBody.appendChild(Renderer.renderBorderSharingCountryElement(data[0], this.borderNo, newDataID, this.__handleMoreBtnClick.bind(this)));
+                tableBody.appendChild(Renderer.renderBorderSharingCountryElement(data[0], this.borderNo, newDataID, this.__handleMoreArrowClick.bind(this)));
             })
             .finally(() => {
                 this.borderNo++;
@@ -218,8 +155,7 @@ class App extends Elements{
         });
     }
 
-    // * Handling actions when user wants more data about a country
-    __handleMoreBtnClick(e) {
+    __handleMoreArrowClick(e) {
         const el = e.target;
         const parentTable = el.closest('.table-row');
         const dataID = parentTable.dataset.id;
@@ -238,30 +174,14 @@ class App extends Elements{
     __renderMoreViewContainer(data) {
         
         const {data: countryData} = data;
-        const {
-            latlng: [lat, lng],
-            area,
-            capital = "",
-            borders = [],
-            continents = [],
-            demonyms = {},
-            flag: flagEmoji = "",
-            flags,
-            independent = false,
-            languages: {},
-            name: {},
-            population = "NA",
-            timezones = [],
-            unMember: isUNMember,
-        } = countryData;
-
         
+        const {latlng: [lat, lng]} = countryData;
+
         L.tileLayer(
             `https://tile.jawg.io/jawg-dark/{z}/{x}/{y}.png?lang=en&access-token=${this.APIKEY}`, {
               maxZoom: 22,
             }
         ).addTo(this.map);
-
 
         if  (!this.currMapPin) {
             this.currMapPin = L.marker([lat, lng], {icon: this.mapPinIcon}).addTo(this.map);
@@ -272,10 +192,13 @@ class App extends Elements{
                 this.map.setView([lat, lng], 7)
             });
         }
-        else 
+        else {
             this.currMapPin.setLatLng([lat, lng]);
+        }
         
         this.map.setView([lat, lng], 4);
+
+        moreViewDetails.innerHTML = Renderer.renderMoreCountryDetails(countryData);
         
     }
 };
