@@ -6,6 +6,7 @@ import { Renderer } from "./modules/render.js";
 import { Elements } from "./modules/elements.js";
 
 const rootEl = document.querySelector(':root');
+const toggleThemeBtn = document.querySelector('.toggle-theme');
 
 const inputBox = document.querySelector('.search-box');
 const searchBtn = document.querySelector('.search-btn');
@@ -16,6 +17,14 @@ const tableErrorCol = document.querySelector('.table-error tr > td');
 
 const moreViewContainer = document.querySelector('.more-view-container');
 const moreViewDetails = document.querySelector('.more-view-details-container');
+
+/* Other Eventlisteners */
+toggleThemeBtn.addEventListener("click", () => {
+    document.body.classList.toggle('dark-body');
+    const themeIcon = toggleThemeBtn.querySelector('i');
+    themeIcon.classList.toggle("fa-moon");
+    themeIcon.classList.toggle("fa-sun");
+});
 
 class App extends Elements{
     
