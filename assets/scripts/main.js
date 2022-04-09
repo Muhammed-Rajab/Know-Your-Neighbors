@@ -183,8 +183,22 @@ class App extends Elements{
             }
         ).addTo(this.map);
 
+        // L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        //     maxZoom: 18,
+        //     id: 'mapbox/streets-v11',
+        //     tileSize: 512,
+        //     zoomOffset: -1,
+        //     accessToken: "pk.eyJ1Ijoic2hlaGF0ZXNteXVzZXJuYW1lIiwiYSI6ImNsMXJyYnhhMDA3dTczZHBsdmt4cXMxMTAifQ.xhojAmwJ-yvTQK0WLzWA_g"
+        // }).addTo(this.map);
+
         if  (!this.currMapPin) {
-            this.currMapPin = L.marker([lat, lng], {icon: this.mapPinIcon}).addTo(this.map);
+            
+            this.currMapPin = L.marker([lat, lng], {icon: this.mapPinIcon})
+                .bindTooltip(`Lat: ${lat} Lng: ${lng}`, {
+                    direction: "top",
+                    className: "tooltip-current-country-more-marker"
+                }).addTo(this.map);
+            
             this.currMapPin.on('click', (e) => {
                 const {latlng:{
                     lat,lng

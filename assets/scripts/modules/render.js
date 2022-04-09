@@ -2,6 +2,7 @@
 
 const log = console.log;
 
+const tableErrorCol = document.querySelector('.table-error tr > td');
 class Renderer {
     
     static renderBorderSharingCountryElement(data, borderNo, id, handleMoreBtnClick) {
