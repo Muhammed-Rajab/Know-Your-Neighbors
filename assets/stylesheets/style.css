@@ -68,7 +68,10 @@ input:active, button:active{border: none;outline: none;}
 
 .dark-body .navbar,
 .dark-body .search-box-container,
-.dark-body .search-box{color: var(--dark-text-color);}
+.dark-body .search-box{color: var(--dark-text-color) !important;}
+
+.dark-body .more-link {color: #bfbfbf !important;}
+
 .dark-body .fa-magnifying-glass,
 .dark-body .more-link{color: var(--dark-button-bg);}
 .dark-body .results-table::before {background-color: #191a1a94;}
@@ -319,21 +322,13 @@ tr td:last-child {
     background: transparent;
 }
 
-.more-country-title {
-    font-size: 2rem;
-}
+.more-country-title {font-size: 2rem;}
 
-.more-country-name {
+.more-country-name {font-weight: 900;}
 
-}
+.more-view-details-container{padding: 30px;}
 
-.more-view-details-container{
-    padding: 30px;
-}
-
-.more-view-details-container section {
-    padding-left: 20px;
-}
+.more-view-details-container section {padding-left: 20px;}
 
 .more-country-details-list {
     padding-left: 20px;
@@ -344,12 +339,9 @@ tr td:last-child {
     row-gap: 7px;
 }
 
-.more-country-details-list a {
-    color: black;
-}
+.more-country-details-list a {color: black;}
 
 .more-country-details-list li {
-    /* list-style-type: ; */
     font-weight: 300;
     color: #6F6F6F;
 }
