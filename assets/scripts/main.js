@@ -4,23 +4,28 @@ const log = console.log;
 // * Importing modules
 import { Renderer } from "./modules/render.js";
 import { Elements } from "./modules/elements.js";
+import { setTheme, updateTheme } from "./modules/theme.js";
 
 const rootEl = document.querySelector(':root');
 const toggleThemeBtn = document.querySelector('.toggle-theme');
 
 const inputBox = document.querySelector('.search-box');
 const searchBtn = document.querySelector('.search-btn');
-
-const table = document.querySelector('.results-table');
 const tableBody = document.querySelector('.table-body');
-const tableErrorCol = document.querySelector('.table-error tr > td');
 
 const moreViewContainer = document.querySelector('.more-view-container');
 const moreViewDetails = document.querySelector('.more-view-details-container');
 
 /* Other Eventlisteners */
 toggleThemeBtn.addEventListener("click", () => {
+    
     document.body.classList.toggle('dark-body');
+
+    setTheme(
+        !document.body.classList.contains("dark-body") ? "light": "dark"
+    );
+    updateTheme();
+
     const themeIcon = toggleThemeBtn.querySelector('i');
     themeIcon.classList.toggle("fa-moon");
     themeIcon.classList.toggle("fa-sun");
@@ -48,17 +53,10 @@ class App extends Elements{
         navigator.geolocation.getCurrentPosition((e) => {
             
             const {coords: {latitude: lat,longitude: lng}} = e;
-
-            this.map = L.map('map', {
-                zoomControl: false
-            }).setView([lat, lng], 4);
+            this.map = L.map('map', {zoomControl: false}).setView([lat, lng], 4);
 
         }, () => {
-            
-            this.map = L.map('map', {
-                zoomControl: false
-            }).setView([0, 0], 4);
-
+            this.map = L.map('map', {zoomControl: false}).setView([0, 0], 4);
         });
 
         this.mapPinIcon = L.icon({
@@ -74,6 +72,8 @@ class App extends Elements{
         // * Event listeners
         searchBtn.addEventListener('click', () => {
             
+            // * When searchBtn is clicked
+
             if (this.isSearchingForCountry || inputBox.value.length === 0) return;
             
             this.setTableErrorVisibility(false);
@@ -143,25 +143,21 @@ class App extends Elements{
         };
     
         countryBorders.forEach(border => {
+            
             fetch(`https://restcountries.com/v3.1/alpha/${border}`)
              .then(response => response.json())
              .then(data => {
                 
-                 // * When first promise is fulfilled or rejected
+                // * When first promise is fulfilled or rejected
                 if (this.borderNo === 1) tableBody.innerHTML = "";
 
                 const newDataID = Date.now();
                 this.currentCountryNeighboursData.push({data: data[0], id: newDataID});
                 tableBody.appendChild(Renderer.renderBorderSharingCountryElement(data[0], this.borderNo, newDataID, this.__handleMoreArrowClick.bind(this)));
             })
-            .finally(() => {
-                this.borderNo++;
-
-                if (this.borderNo === countryBorders.length){
-                    // * When it's the last promise to be fulfilled or to be rejected
-                }
-            });
+            .finally(() => this.borderNo++);
         });
+
     }
 
     __handleMoreArrowClick(e) {
@@ -192,14 +188,6 @@ class App extends Elements{
             }
         ).addTo(this.map);
 
-        // L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-        //     maxZoom: 18,
-        //     id: 'mapbox/streets-v11',
-        //     tileSize: 512,
-        //     zoomOffset: -1,
-        //     accessToken: "pk.eyJ1Ijoic2hlaGF0ZXNteXVzZXJuYW1lIiwiYSI6ImNsMXJyYnhhMDA3dTczZHBsdmt4cXMxMTAifQ.xhojAmwJ-yvTQK0WLzWA_g"
-        // }).addTo(this.map);
-
         if  (!this.currMapPin) {
             
             this.currMapPin = L.marker([lat, lng], {icon: this.mapPinIcon})
@@ -227,6 +215,3 @@ class App extends Elements{
 };
 
 const app = new App();
-
-inputBox.value = "india";
-searchBtn.click();

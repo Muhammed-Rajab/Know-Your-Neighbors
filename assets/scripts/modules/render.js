@@ -3,7 +3,8 @@
 const log = console.log;
 
 const tableErrorCol = document.querySelector('.table-error tr > td');
-class Renderer {
+
+export class Renderer {
     
     static renderBorderSharingCountryElement(data, borderNo, id, handleMoreBtnClick) {
         const {name:{common:  countryName},flag: countryFlag,population: countryPopulation} = data;
@@ -105,8 +106,4 @@ class Renderer {
             </ul>
         </section>`
     }
-};
-
-export {
-    Renderer
 };
